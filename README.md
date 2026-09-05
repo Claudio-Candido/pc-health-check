@@ -9,28 +9,33 @@ Registe equipamentos, avalie desempenho / segurança / armazenamento, calcule o 
 ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0-red)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
+<p align="center">
+  <img src="docs/screenshots/01-landing.png" alt="Landing page do PC Health Check" width="900">
+</p>
+
 ---
 
 ## Índice
 
 1. [Visão geral](#visão-geral)
-2. [Funcionalidades](#funcionalidades)
-3. [Planos SaaS](#planos-saas)
-4. [Stack tecnológica](#stack-tecnológica)
-5. [Arquitetura](#arquitetura)
-6. [Modelo de dados](#modelo-de-dados)
-7. [PC Health Score](#pc-health-score)
-8. [Geração de PDF](#geração-de-pdf)
-9. [Rotas da aplicação](#rotas-da-aplicação)
-10. [Instalação e arranque](#instalação-e-arranque)
-11. [Configuração](#configuração)
-12. [Utilização (fluxo típico)](#utilização-fluxo-típico)
-13. [Testes](#testes)
-14. [Estrutura de pastas](#estrutura-de-pastas)
-15. [Segurança](#segurança)
-16. [Roadmap](#roadmap)
-17. [Documentação adicional](#documentação-adicional)
-18. [Licença](#licença)
+2. [Screenshots](#screenshots)
+3. [Funcionalidades](#funcionalidades)
+4. [Planos SaaS](#planos-saas)
+5. [Stack tecnológica](#stack-tecnológica)
+6. [Arquitetura](#arquitetura)
+7. [Modelo de dados](#modelo-de-dados)
+8. [PC Health Score](#pc-health-score)
+9. [Geração de PDF](#geração-de-pdf)
+10. [Rotas da aplicação](#rotas-da-aplicação)
+11. [Instalação e arranque](#instalação-e-arranque)
+12. [Configuração](#configuração)
+13. [Utilização (fluxo típico)](#utilização-fluxo-típico)
+14. [Testes](#testes)
+15. [Estrutura de pastas](#estrutura-de-pastas)
+16. [Segurança](#segurança)
+17. [Roadmap](#roadmap)
+18. [Documentação adicional](#documentação-adicional)
+19. [Licença](#licença)
 
 ---
 
@@ -52,6 +57,46 @@ O objetivo é transformar uma análise técnica num **relatório PDF profissiona
 | Avaliação subjetiva sem score | Score 0–100 com 4 categorias |
 | Sem controlo de volume | Planos FREE / PRO com limites |
 | Sem marca da empresa | Logo + cor (plano PRO) |
+
+---
+
+## Screenshots
+
+Capturas reais da aplicação. Galeria completa: [`docs/SCREENSHOTS.md`](docs/SCREENSHOTS.md).
+
+### Dashboard
+
+![Dashboard](docs/screenshots/09-dashboard.png)
+
+### Novo diagnóstico
+
+![Novo diagnóstico](docs/screenshots/04-new-diagnosis.png)
+
+### Detalhe com PC Health Score
+
+![Detalhe do computador](docs/screenshots/05-computer-detail.png)
+
+### Pré-visualização do relatório
+
+![Pré-visualização](docs/screenshots/07-report-preview.png)
+
+### PDF gerado
+
+![PDF](docs/screenshots/16-pdf-report.png)
+
+### Autenticação e planos
+
+| Login | Plano PRO |
+|-------|-----------|
+| ![Login](docs/screenshots/14-login.png) | ![Billing PRO](docs/screenshots/12-billing-pro.png) |
+
+| Lista de computadores | Relatórios |
+|-----------------------|------------|
+| ![Computadores](docs/screenshots/06-computers-list.png) | ![Relatórios](docs/screenshots/08-reports-list.png) |
+
+| Definições | Landing (mobile) |
+|------------|------------------|
+| ![Definições](docs/screenshots/10-settings.png) | ![Mobile](docs/screenshots/15-landing-mobile.png) |
 
 ---
 
@@ -469,6 +514,7 @@ Ideias pós-MVP:
 
 | Documento | Conteúdo |
 |-----------|----------|
+| [`docs/SCREENSHOTS.md`](docs/SCREENSHOTS.md) | Galeria completa de screenshots |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Arquitetura, blueprints, fluxo de pedidos |
 | [`docs/DATA_MODEL.md`](docs/DATA_MODEL.md) | Esquema de base de dados |
 | [`docs/SCORING.md`](docs/SCORING.md) | Algoritmo do PC Health Score |

@@ -4,6 +4,7 @@
 
 | Documento | Descrição |
 |-----------|-----------|
+| [SCREENSHOTS.md](SCREENSHOTS.md) | Galeria de screenshots da interface |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Application factory, blueprints, serviços, fluxos |
 | [DATA_MODEL.md](DATA_MODEL.md) | Tabelas, relações, campos e constraints |
 | [SCORING.md](SCORING.md) | Algoritmo do PC Health Score com exemplos |
