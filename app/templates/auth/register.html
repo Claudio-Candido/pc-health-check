@@ -1,0 +1,45 @@
+{% extends "layouts/base.html" %}
+{% block title %}Criar conta — PC Health Check{% endblock %}
+{% block public %}
+<div class="auth-page">
+  <div class="auth-card">
+    <h1>Criar conta</h1>
+    <p class="lead">Plano FREE com 5 relatórios/mês. Upgrade para PRO quando precisar.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-wrap">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="post" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="technician_name">Nome do técnico</label>
+        <input type="text" id="technician_name" name="technician_name" required value="{{ technician_name or '' }}">
+      </div>
+      <div class="form-group">
+        <label for="company_name">Empresa</label>
+        <input type="text" id="company_name" name="company_name" value="{{ company_name or '' }}" placeholder="Minha Empresa">
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required value="{{ email or '' }}">
+      </div>
+      <div class="form-group">
+        <label for="password">Palavra-passe</label>
+        <input type="password" id="password" name="password" required minlength="6">
+        <span class="hint">Mínimo 6 caracteres</span>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Criar conta FREE</button>
+    </form>
+    <div class="auth-footer">
+      Já tem conta? <a href="{{ url_for('auth.login') }}">Entrar</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

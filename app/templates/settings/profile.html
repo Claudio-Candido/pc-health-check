@@ -1,0 +1,64 @@
+{% extends "layouts/base.html" %}
+{% block title %}Definições — PC Health Check{% endblock %}
+{% block page_title %}Definições{% endblock %}
+{% block page_subtitle %}Perfil da empresa e personalização{% endblock %}
+
+{% block content %}
+<div class="grid grid-2">
+  <form method="post" enctype="multipart/form-data" class="card">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <h3 style="margin-top:0">Perfil</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="technician_name">Nome do técnico</label>
+        <input type="text" id="technician_name" name="technician_name" required value="{{ current_user.technician_name }}">
+      </div>
+      <div class="form-group">
+        <label for="company_name">Empresa</label>
+        <input type="text" id="company_name" name="company_name" required value="{{ current_user.company_name }}">
+      </div>
+      <div class="form-group">
+        <label for="phone">Telefone</label>
+        <input type="tel" id="phone" name="phone" value="{{ current_user.phone or '' }}">
+      </div>
+      <div class="form-group">
+        <label for="brand_color">Cor de marca {% if not current_user.is_pro %}<span class="badge badge-amber">PRO</span>{% endif %}</label>
+        <input type="color" id="brand_color" name="brand_color" value="{{ current_user.brand_color or '#2563eb' }}" {% if not current_user.is_pro %}disabled{% endif %}>
+        {% if not current_user.is_pro %}
+          <input type="hidden" name="brand_color" value="{{ current_user.brand_color or '#2563eb' }}">
+          <span class="hint">Disponível no plano PRO</span>
+        {% endif %}
+      </div>
+      <div class="form-group">
+        <label for="logo">Logotipo {% if not current_user.is_pro %}<span class="badge badge-amber">PRO</span>{% endif %}</label>
+        <input type="file" id="logo" name="logo" accept="image/*" {% if not current_user.is_pro %}disabled{% endif %}>
+        {% if current_user.logo_url() %}
+          <div style="margin-top:0.5rem">
+            <img src="{{ current_user.logo_url() }}" alt="Logo" style="max-height:48px;max-width:160px;background:#f8fafc;padding:0.35rem;border-radius:8px">
+          </div>
+        {% endif %}
+      </div>
+      <button class="btn btn-primary" type="submit">Guardar</button>
+    </div>
+  </form>
+
+  <div class="card">
+    <h3 style="margin-top:0">Utilização do plano</h3>
+    <p>
+      Plano atual:
+      <span class="plan-badge {% if current_user.is_pro %}plan-pro{% else %}plan-free{% endif %}">
+        {{ current_user.plan|upper }}
+      </span>
+    </p>
+    {% if usage.unlimited %}
+      <p>Relatórios ilimitados este mês.</p>
+    {% else %}
+      <p>{{ usage.used }} de {{ usage.limit }} relatórios usados.</p>
+      <div class="progress"><span style="width: {{ (usage.used / usage.limit * 100) if usage.limit else 0 }}%"></span></div>
+    {% endif %}
+    <div style="margin-top:1rem">
+      <a class="btn btn-secondary" href="{{ url_for('settings.billing') }}">Gerir plano</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

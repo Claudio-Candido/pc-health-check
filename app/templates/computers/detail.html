@@ -1,0 +1,94 @@
+{% extends "layouts/base.html" %}
+{% block title %}{{ computer.client_name }} — PC Health Check{% endblock %}
+{% block page_title %}{{ computer.client_name }}{% endblock %}
+{% block page_subtitle %}{{ computer.brand }} {{ computer.model }} · {{ computer.analysis_date.strftime('%d/%m/%Y') }}{% endblock %}
+{% block top_actions %}
+  <a class="btn btn-secondary" href="{{ url_for('computers.edit', computer_id=computer.id) }}">Editar</a>
+  <a class="btn btn-secondary" href="{{ url_for('reports.preview', computer_id=computer.id) }}">Pré-visualizar</a>
+  <form method="post" action="{{ url_for('reports.generate', computer_id=computer.id) }}" style="display:inline">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="btn btn-primary" type="submit">Gerar PDF</button>
+  </form>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="detail-score">
+    <div class="score-ring" style="background:{{ score_color(computer.health_score) }};width:96px;height:96px;font-size:1.6rem">
+      {{ computer.health_score }}
+    </div>
+    <div>
+      <div style="font-size:0.8rem;color:#64748b;text-transform:uppercase;font-weight:700;letter-spacing:0.04em">PC Health Score</div>
+      <div style="font-size:1.4rem;font-weight:800">{{ score_label(computer.health_score) }}</div>
+    </div>
+    <div class="cat-scores">
+      <div class="cat-score"><div class="n">{{ computer.score_performance }}</div><div class="l">Performance</div></div>
+      <div class="cat-score"><div class="n">{{ computer.score_system }}</div><div class="l">Sistema</div></div>
+      <div class="cat-score"><div class="n">{{ computer.score_storage }}</div><div class="l">Armazenamento</div></div>
+      <div class="cat-score"><div class="n">{{ computer.score_security }}</div><div class="l">Segurança</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-2" style="margin-top:1rem">
+  <div class="card">
+    <h3 style="margin-top:0">Equipamento</h3>
+    <table class="data">
+      <tr><th>Marca</th><td>{{ computer.brand }}</td></tr>
+      <tr><th>Modelo</th><td>{{ computer.model }}</td></tr>
+      <tr><th>Processador</th><td>{{ computer.processor }}</td></tr>
+      <tr><th>RAM</th><td>{{ computer.ram }}</td></tr>
+      <tr><th>Armazenamento</th><td>{{ computer.storage }}</td></tr>
+      <tr><th>SO</th><td>{{ computer.operating_system }}</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Diagnóstico</h3>
+    {% if computer.diagnosis %}
+    <table class="data">
+      <tr><th>Desempenho</th><td>{{ rating_labels[computer.diagnosis.performance] }}</td></tr>
+      <tr><th>Armazenamento</th><td>{{ rating_labels[computer.diagnosis.storage] }}</td></tr>
+      <tr><th>Sistema operativo</th><td>{{ rating_labels[computer.diagnosis.operating_system] }}</td></tr>
+      <tr><th>Segurança</th><td>{{ rating_labels[computer.diagnosis.security] }}</td></tr>
+      <tr><th>Atualizações</th><td>{{ rating_labels[computer.diagnosis.updates] }}</td></tr>
+      <tr><th>Estado geral</th><td>{{ rating_labels[computer.diagnosis.overall] }}</td></tr>
+    </table>
+    {% else %}
+    <p>Sem diagnóstico.</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0">Serviços realizados</h3>
+  {% if computer.services %}
+  <ul>
+    {% for s in computer.services %}
+      <li><strong>{{ s.label }}</strong>{% if s.description %} — {{ s.description }}{% endif %}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p style="color:#64748b">Nenhum serviço registado.</p>
+  {% endif %}
+</div>
+
+{% if computer.recommendations or computer.notes %}
+<div class="card">
+  {% if computer.recommendations %}
+  <h3 style="margin-top:0">Recomendações</h3>
+  <p style="white-space:pre-wrap">{{ computer.recommendations }}</p>
+  {% endif %}
+  {% if computer.notes %}
+  <h3>Notas técnicas</h3>
+  <p style="white-space:pre-wrap">{{ computer.notes }}</p>
+  {% endif %}
+</div>
+{% endif %}
+
+<form method="post" action="{{ url_for('computers.delete', computer_id=computer.id) }}"
+      onsubmit="return confirm('Eliminar este registo?');" style="margin-top:1rem">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <button class="btn btn-danger" type="submit">Eliminar computador</button>
+</form>
+{% endblock %}

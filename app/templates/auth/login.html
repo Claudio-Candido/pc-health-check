@@ -1,0 +1,40 @@
+{% extends "layouts/base.html" %}
+{% block title %}Entrar — PC Health Check{% endblock %}
+{% block public %}
+<div class="auth-page">
+  <div class="auth-card">
+    <h1>Entrar</h1>
+    <p class="lead">Aceda à sua conta PC Health Check.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-wrap">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="post" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autofocus>
+      </div>
+      <div class="form-group">
+        <label for="password">Palavra-passe</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <label style="display:flex;gap:0.5rem;align-items:center;font-size:0.88rem;color:#64748b">
+        <input type="checkbox" name="remember" value="1"> Manter sessão
+      </label>
+      <button class="btn btn-primary btn-block" type="submit">Entrar</button>
+    </form>
+    <div class="auth-footer">
+      Ainda não tem conta? <a href="{{ url_for('auth.register') }}">Registar</a>
+      · <a href="{{ url_for('landing') }}">Início</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

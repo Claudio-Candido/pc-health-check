@@ -1,0 +1,66 @@
+{% extends "layouts/base.html" %}
+{% block title %}Relatórios — PC Health Check{% endblock %}
+{% block page_title %}Relatórios{% endblock %}
+{% block page_subtitle %}
+  {% if usage.unlimited %}
+    Plano PRO · ilimitados
+  {% else %}
+    {{ usage.used }}/{{ usage.limit }} usados este mês
+  {% endif %}
+{% endblock %}
+{% block top_actions %}
+  {% if not usage.unlimited %}
+    <a class="btn btn-secondary" href="{{ url_for('settings.billing') }}">Upgrade PRO</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  {% if reports %}
+  <div class="table-wrap">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Cliente</th>
+          <th>Equipamento</th>
+          <th>Score</th>
+          <th>Gerado em</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in reports %}
+        <tr>
+          <td>{{ r.id }}</td>
+          <td><strong>{{ r.computer.client_name }}</strong></td>
+          <td>{{ r.computer.brand }} {{ r.computer.model }}</td>
+          <td>
+            {% if r.health_score >= 90 %}
+              <span class="badge badge-green">{{ r.health_score }}</span>
+            {% elif r.health_score >= 75 %}
+              <span class="badge badge-blue">{{ r.health_score }}</span>
+            {% elif r.health_score >= 55 %}
+              <span class="badge badge-amber">{{ r.health_score }}</span>
+            {% else %}
+              <span class="badge badge-red">{{ r.health_score }}</span>
+            {% endif %}
+          </td>
+          <td>{{ r.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+          <td class="actions">
+            <a class="btn btn-sm btn-primary" href="{{ url_for('reports.download', report_id=r.id) }}">PDF</a>
+            <a class="btn btn-sm btn-secondary" href="{{ url_for('computers.detail', computer_id=r.computer_id) }}">Ver PC</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">
+    <strong>Ainda sem relatórios</strong>
+    Abra um computador e clique em “Gerar PDF”.
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

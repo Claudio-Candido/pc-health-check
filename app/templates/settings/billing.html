@@ -1,0 +1,57 @@
+{% extends "layouts/base.html" %}
+{% block title %}Plano — PC Health Check{% endblock %}
+{% block page_title %}Plano e faturação{% endblock %}
+{% block page_subtitle %}FREE vs PRO (simulação MVP){% endblock %}
+
+{% block content %}
+<div class="grid grid-2">
+  <div class="card">
+    <h3 style="margin-top:0">FREE</h3>
+    <div style="font-size:2rem;font-weight:800;margin:0.5rem 0">€0</div>
+    <ul>
+      <li>5 relatórios por mês</li>
+      <li>Dashboard e diagnósticos</li>
+      <li>PDF padrão</li>
+    </ul>
+    {% if current_user.plan == 'free' %}
+      <span class="badge badge-slate">Plano atual</span>
+    {% else %}
+      <form method="post" style="margin-top:1rem">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="action" value="downgrade">
+        <button class="btn btn-secondary" type="submit">Mudar para FREE</button>
+      </form>
+    {% endif %}
+  </div>
+
+  <div class="card" style="border-color:#93c5fd;box-shadow:0 0 0 1px rgba(37,99,235,0.2), var(--shadow)">
+    <h3 style="margin-top:0">PRO</h3>
+    <div style="font-size:2rem;font-weight:800;margin:0.5rem 0">Ilimitado</div>
+    <ul>
+      <li>Relatórios ilimitados</li>
+      <li>Logotipo próprio nos PDFs</li>
+      <li>Cor de marca personalizada</li>
+    </ul>
+    {% if current_user.plan == 'pro' %}
+      <span class="badge badge-blue">Plano atual</span>
+    {% else %}
+      <form method="post" style="margin-top:1rem">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="action" value="upgrade">
+        <button class="btn btn-primary" type="submit">Ativar PRO (MVP)</button>
+      </form>
+      <p class="hint" style="margin-top:0.75rem">No MVP o upgrade é simulado sem pagamento.</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card" style="margin-top:1rem">
+  <h3 style="margin-top:0">Utilização este mês</h3>
+  {% if usage.unlimited %}
+    <p>Relatórios gerados: <strong>{{ usage.used }}</strong> (sem limite)</p>
+  {% else %}
+    <p><strong>{{ usage.used }}</strong> / {{ usage.limit }} relatórios</p>
+    <div class="progress"><span style="width: {{ (usage.used / usage.limit * 100) if usage.limit else 0 }}%"></span></div>
+  {% endif %}
+</div>
+{% endblock %}

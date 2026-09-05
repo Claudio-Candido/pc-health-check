@@ -1,0 +1,115 @@
+{% extends "layouts/base.html" %}
+{% block title %}Dashboard — PC Health Check{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_subtitle %}Visão geral da sua atividade técnica{% endblock %}
+{% block top_actions %}
+  <a class="btn btn-primary" href="{{ url_for('computers.create') }}">+ Novo diagnóstico</a>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-4">
+  <div class="stat-card">
+    <div class="label">Computadores</div>
+    <div class="value">{{ total_computers }}</div>
+    <div class="hint">Equipamentos registados</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Relatórios</div>
+    <div class="value">{{ total_reports }}</div>
+    <div class="hint">Total gerados</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Score médio</div>
+    <div class="value">{{ avg_score }}</div>
+    <div class="hint">PC Health Score</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Plano {{ usage.plan|upper }}</div>
+    <div class="value">
+      {% if usage.unlimited %}∞{% else %}{{ usage.used }}/{{ usage.limit }}{% endif %}
+    </div>
+    <div class="hint">Relatórios este mês</div>
+    {% if not usage.unlimited %}
+      <div class="progress" style="margin-top:0.75rem">
+        <span style="width: {{ ((usage.used / usage.limit) * 100) if usage.limit else 0 }}%"></span>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card" style="margin-top:1.25rem">
+  <div class="card-header">
+    <h2>Computadores recentes</h2>
+    <a href="{{ url_for('computers.list_computers') }}">Ver todos</a>
+  </div>
+  {% if computers %}
+  <div class="table-wrap">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Equipamento</th>
+          <th>Data</th>
+          <th>Score</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in computers %}
+        <tr>
+          <td><strong>{{ c.client_name }}</strong></td>
+          <td>{{ c.brand }} {{ c.model }}</td>
+          <td>{{ c.analysis_date.strftime('%d/%m/%Y') }}</td>
+          <td><span class="badge badge-blue">{{ c.health_score }}</span></td>
+          <td><a href="{{ url_for('computers.detail', computer_id=c.id) }}">Abrir</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">
+    <strong>Ainda sem diagnósticos</strong>
+    Comece por registar o primeiro computador.
+    <div style="margin-top:1rem">
+      <a class="btn btn-primary" href="{{ url_for('computers.create') }}">Criar diagnóstico</a>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Relatórios recentes</h2>
+    <a href="{{ url_for('reports.list_reports') }}">Ver todos</a>
+  </div>
+  {% if recent_reports %}
+  <div class="table-wrap">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Cliente</th>
+          <th>Score</th>
+          <th>Data</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in recent_reports %}
+        <tr>
+          <td>{{ r.id }}</td>
+          <td>{{ r.computer.client_name }}</td>
+          <td>{{ r.health_score }}</td>
+          <td>{{ r.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+          <td><a href="{{ url_for('reports.download', report_id=r.id) }}">PDF</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">Nenhum relatório gerado ainda.</div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "layouts/base.html" %}
+{% block title %}{% if mode == 'edit' %}Editar{% else %}Novo{% endif %} diagnóstico — PC Health Check{% endblock %}
+{% block page_title %}{% if mode == 'edit' %}Editar diagnóstico{% else %}Novo diagnóstico{% endif %}{% endblock %}
+{% block page_subtitle %}Cadastro, avaliação e serviços realizados{% endblock %}
+
+{% block content %}
+<form method="post" class="card">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+  <h3 class="section-title" style="margin-top:0">Dados do computador</h3>
+  <div class="form-grid">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="client_name">Cliente *</label>
+        <input type="text" id="client_name" name="client_name" required
+               value="{{ computer.client_name if computer else '' }}">
+      </div>
+      <div class="form-group">
+        <label for="analysis_date">Data da análise *</label>
+        <input type="date" id="analysis_date" name="analysis_date" required
+               value="{{ computer.analysis_date.strftime('%Y-%m-%d') if computer and computer.analysis_date else '' }}"
+               {% if not computer %}data-default-today{% endif %}>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="brand">Marca *</label>
+        <input type="text" id="brand" name="brand" required value="{{ computer.brand if computer else '' }}">
+      </div>
+      <div class="form-group">
+        <label for="model">Modelo *</label>
+        <input type="text" id="model" name="model" required value="{{ computer.model if computer else '' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="processor">Processador *</label>
+        <input type="text" id="processor" name="processor" required value="{{ computer.processor if computer else '' }}">
+      </div>
+      <div class="form-group">
+        <label for="ram">Memória RAM *</label>
+        <input type="text" id="ram" name="ram" required placeholder="ex: 16 GB DDR4" value="{{ computer.ram if computer else '' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="storage">Armazenamento *</label>
+        <input type="text" id="storage" name="storage" required placeholder="ex: 512 GB SSD NVMe" value="{{ computer.storage if computer else '' }}">
+      </div>
+      <div class="form-group">
+        <label for="operating_system">Sistema operativo *</label>
+        <input type="text" id="operating_system" name="operating_system" required placeholder="ex: Windows 11 Pro" value="{{ computer.operating_system if computer else '' }}">
+      </div>
+    </div>
+  </div>
+
+  <h3 class="section-title">Diagnóstico</h3>
+  <div class="rating-grid">
+    {% set fields = [
+      ('diag_performance', 'Desempenho', diagnosis.performance if diagnosis else 'bom'),
+      ('diag_storage', 'Armazenamento', diagnosis.storage if diagnosis else 'bom'),
+      ('diag_operating_system', 'Sistema operativo', diagnosis.operating_system if diagnosis else 'bom'),
+      ('diag_security', 'Segurança', diagnosis.security if diagnosis else 'bom'),
+      ('diag_updates', 'Atualizações', diagnosis.updates if diagnosis else 'bom'),
+      ('diag_overall', 'Estado geral', diagnosis.overall if diagnosis else 'bom')
+    ] %}
+    {% for name, label, current in fields %}
+    <div class="rating-card">
+      <label class="title" for="{{ name }}">{{ label }}</label>
+      <select id="{{ name }}" name="{{ name }}">
+        {% for choice in rating_choices %}
+          <option value="{{ choice }}" {% if current == choice %}selected{% endif %}>{{ rating_labels[choice] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% endfor %}
+  </div>
+
+  <h3 class="section-title">Serviços realizados</h3>
+  <div class="services-list">
+    {% for svc in service_choices %}
+    <div class="service-item">
+      <label>
+        <input type="checkbox" name="services" value="{{ svc }}"
+               {% if svc in selected_services %}checked{% endif %}
+               data-service-check="#svc_desc_{{ svc }}">
+        {{ service_labels[svc] }}
+      </label>
+      <input type="text" id="svc_desc_{{ svc }}" name="svc_desc_{{ svc }}"
+             placeholder="Descrição opcional"
+             value="{{ service_descriptions.get(svc, '') }}">
+    </div>
+    {% endfor %}
+  </div>
+
+  <h3 class="section-title">Notas e recomendações</h3>
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="recommendations">Recomendações</label>
+      <textarea id="recommendations" name="recommendations" placeholder="Sugestões para o cliente...">{{ computer.recommendations if computer and computer.recommendations else '' }}</textarea>
+    </div>
+    <div class="form-group">
+      <label for="notes">Notas técnicas (internas)</label>
+      <textarea id="notes" name="notes">{{ computer.notes if computer and computer.notes else '' }}</textarea>
+    </div>
+  </div>
+
+  <div class="actions" style="margin-top:1.5rem">
+    <button class="btn btn-primary" type="submit">{% if mode == 'edit' %}Guardar alterações{% else %}Registar diagnóstico{% endif %}</button>
+    <a class="btn btn-secondary" href="{{ url_for('computers.list_computers') }}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

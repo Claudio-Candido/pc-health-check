@@ -1,0 +1,67 @@
+{% extends "layouts/base.html" %}
+{% block title %}PC Health Check — Relatórios técnicos profissionais{% endblock %}
+{% block public %}
+<div class="landing">
+  <nav class="landing-nav">
+    <div class="brand">
+      <div class="brand-mark">PC</div>
+      <div class="brand-text">
+        <strong>PC Health Check</strong>
+        <span>SaaS para técnicos</span>
+      </div>
+    </div>
+    <div class="landing-actions">
+      <a class="btn btn-secondary" href="{{ url_for('auth.login') }}">Entrar</a>
+      <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Criar conta</a>
+    </div>
+  </nav>
+
+  <section class="landing-hero">
+    <h1>Relatórios profissionais de saúde do PC em minutos</h1>
+    <p>
+      Registe equipamentos, avalie desempenho, segurança e armazenamento,
+      calcule o PC Health Score e entregue PDFs com a sua marca.
+    </p>
+    <div class="landing-actions">
+      <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Começar grátis</a>
+      <a class="btn btn-secondary" href="{{ url_for('auth.login') }}">Já tenho conta</a>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feature">
+      <h3>Diagnóstico estruturado</h3>
+      <p>Avalie desempenho, armazenamento, SO, segurança, atualizações e estado geral.</p>
+    </div>
+    <div class="feature">
+      <h3>PC Health Score</h3>
+      <p>Pontuação 0–100 com categorias de Performance, Sistema, Armazenamento e Segurança.</p>
+    </div>
+    <div class="feature">
+      <h3>PDF profissional</h3>
+      <p>Gere relatórios com logotipo, dados do cliente, serviços e recomendações.</p>
+    </div>
+  </section>
+
+  <section class="pricing">
+    <div class="price-card">
+      <h3>FREE</h3>
+      <div class="price">€0</div>
+      <ul>
+        <li>5 relatórios por mês</li>
+        <li>Dashboard completo</li>
+        <li>PDF padrão</li>
+      </ul>
+    </div>
+    <div class="price-card featured">
+      <h3>PRO</h3>
+      <div class="price">Ilimitado</div>
+      <ul>
+        <li>Relatórios ilimitados</li>
+        <li>Logotipo próprio</li>
+        <li>Cor de marca personalizada</li>
+      </ul>
+    </div>
+  </section>
+</div>
+{% endblock %}

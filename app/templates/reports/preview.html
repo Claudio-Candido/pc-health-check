@@ -1,0 +1,75 @@
+{% extends "layouts/base.html" %}
+{% block title %}Pré-visualização — PC Health Check{% endblock %}
+{% block page_title %}Pré-visualização do relatório{% endblock %}
+{% block page_subtitle %}{{ computer.client_name }} · {{ computer.brand }} {{ computer.model }}{% endblock %}
+{% block top_actions %}
+  <a class="btn btn-secondary" href="{{ url_for('computers.detail', computer_id=computer.id) }}">Voltar</a>
+  <form method="post" action="{{ url_for('reports.generate', computer_id=computer.id) }}" style="display:inline">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="btn btn-primary" type="submit">Gerar PDF</button>
+  </form>
+{% endblock %}
+
+{% block content %}
+{% if not usage.unlimited and usage.remaining is not none and usage.remaining <= 0 %}
+  <div class="flash flash-warning">
+    Limite FREE atingido. <a href="{{ url_for('settings.billing') }}">Faça upgrade para PRO</a>.
+  </div>
+{% endif %}
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:center">
+    <div>
+      {% if current_user.logo_url() %}
+        <img src="{{ current_user.logo_url() }}" alt="Logo" style="max-height:48px;max-width:160px">
+      {% else %}
+        <strong style="font-size:1.2rem;color:{{ current_user.brand_color }}">{{ current_user.company_name }}</strong>
+      {% endif %}
+      <div style="color:#64748b;font-size:0.85rem;margin-top:0.25rem">PC Health Check · Relatório técnico</div>
+    </div>
+    <div class="score-ring" style="background:{{ score_color(computer.health_score) }}">{{ computer.health_score }}</div>
+  </div>
+
+  <hr style="border:none;border-top:1px solid #e2e8f0;margin:1.25rem 0">
+
+  <div class="grid grid-2">
+    <div>
+      <h3>Cliente</h3>
+      <p><strong>{{ computer.client_name }}</strong><br>Data: {{ computer.analysis_date.strftime('%d/%m/%Y') }}</p>
+      <h3>Equipamento</h3>
+      <p>
+        {{ computer.brand }} {{ computer.model }}<br>
+        {{ computer.processor }} · {{ computer.ram }} · {{ computer.storage }}<br>
+        {{ computer.operating_system }}
+      </p>
+    </div>
+    <div>
+      <h3>Diagnóstico</h3>
+      {% if computer.diagnosis %}
+      <ul>
+        <li>Desempenho: {{ rating_labels[computer.diagnosis.performance] }}</li>
+        <li>Armazenamento: {{ rating_labels[computer.diagnosis.storage] }}</li>
+        <li>SO: {{ rating_labels[computer.diagnosis.operating_system] }}</li>
+        <li>Segurança: {{ rating_labels[computer.diagnosis.security] }}</li>
+        <li>Atualizações: {{ rating_labels[computer.diagnosis.updates] }}</li>
+        <li>Estado geral: {{ rating_labels[computer.diagnosis.overall] }}</li>
+      </ul>
+      {% endif %}
+    </div>
+  </div>
+
+  <h3>Serviços</h3>
+  {% if computer.services %}
+  <ul>
+    {% for s in computer.services %}
+      <li>{{ s.label }}{% if s.description %} — {{ s.description }}{% endif %}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p style="color:#64748b">Nenhum</p>
+  {% endif %}
+
+  <h3>Recomendações</h3>
+  <p style="white-space:pre-wrap">{{ computer.recommendations or '—' }}</p>
+</div>
+{% endblock %}

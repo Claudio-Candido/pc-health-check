@@ -1,0 +1,68 @@
+{% extends "layouts/base.html" %}
+{% block title %}Computadores — PC Health Check{% endblock %}
+{% block page_title %}Computadores{% endblock %}
+{% block page_subtitle %}Equipamentos analisados{% endblock %}
+{% block top_actions %}
+  <a class="btn btn-primary" href="{{ url_for('computers.create') }}">+ Novo</a>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <form method="get" class="form-row" style="margin-bottom:1rem">
+    <div class="form-group">
+      <label for="q">Pesquisar</label>
+      <input type="text" id="q" name="q" value="{{ q }}" placeholder="Cliente, marca ou modelo">
+    </div>
+    <div class="form-group" style="align-self:end">
+      <button class="btn btn-secondary" type="submit">Filtrar</button>
+    </div>
+  </form>
+
+  {% if computers %}
+  <div class="table-wrap">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Equipamento</th>
+          <th>SO</th>
+          <th>Data</th>
+          <th>Score</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in computers %}
+        <tr>
+          <td><strong>{{ c.client_name }}</strong></td>
+          <td>{{ c.brand }} {{ c.model }}</td>
+          <td>{{ c.operating_system }}</td>
+          <td>{{ c.analysis_date.strftime('%d/%m/%Y') }}</td>
+          <td>
+            {% set label = score_label(c.health_score) %}
+            {% if c.health_score >= 90 %}
+              <span class="badge badge-green">{{ c.health_score }} · {{ label }}</span>
+            {% elif c.health_score >= 75 %}
+              <span class="badge badge-blue">{{ c.health_score }} · {{ label }}</span>
+            {% elif c.health_score >= 55 %}
+              <span class="badge badge-amber">{{ c.health_score }} · {{ label }}</span>
+            {% else %}
+              <span class="badge badge-red">{{ c.health_score }} · {{ label }}</span>
+            {% endif %}
+          </td>
+          <td class="actions">
+            <a class="btn btn-sm btn-secondary" href="{{ url_for('computers.detail', computer_id=c.id) }}">Ver</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">
+    <strong>Nenhum computador encontrado</strong>
+    <a class="btn btn-primary" href="{{ url_for('computers.create') }}" style="margin-top:1rem">Registar equipamento</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

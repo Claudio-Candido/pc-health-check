@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}PC Health Check{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+{% if current_user.is_authenticated %}
+<div class="app-shell">
+  <aside class="sidebar" data-sidebar>
+    <div class="brand">
+      <div class="brand-mark">PC</div>
+      <div class="brand-text">
+        <strong>PC Health Check</strong>
+        <span>Diagnóstico técnico</span>
+      </div>
+    </div>
+    <ul class="nav-list">
+      <li><a href="{{ url_for('dashboard.index') }}" class="{% if request.endpoint == 'dashboard.index' %}active{% endif %}">Dashboard</a></li>
+      <li><a href="{{ url_for('computers.list_computers') }}" class="{% if request.endpoint and request.endpoint.startswith('computers.') %}active{% endif %}">Computadores</a></li>
+      <li><a href="{{ url_for('computers.create') }}" class="{% if request.endpoint == 'computers.create' %}active{% endif %}">Novo diagnóstico</a></li>
+      <li><a href="{{ url_for('reports.list_reports') }}" class="{% if request.endpoint and request.endpoint.startswith('reports.') %}active{% endif %}">Relatórios</a></li>
+      <li><a href="{{ url_for('settings.profile') }}" class="{% if request.endpoint == 'settings.profile' %}active{% endif %}">Definições</a></li>
+      <li><a href="{{ url_for('settings.billing') }}" class="{% if request.endpoint == 'settings.billing' %}active{% endif %}">Plano</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <div><strong style="color:#fff">{{ current_user.technician_name }}</strong></div>
+      <div>{{ current_user.company_name }}</div>
+      <div style="margin-top:0.45rem">
+        <span class="plan-badge {% if current_user.is_pro %}plan-pro{% else %}plan-free{% endif %}">
+          {{ current_user.plan|upper }}
+        </span>
+      </div>
+      <div style="margin-top:0.75rem">
+        <a href="{{ url_for('auth.logout') }}" style="color:#93c5fd">Terminar sessão</a>
+      </div>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <div style="display:flex;gap:0.75rem;align-items:flex-start">
+        <button class="mobile-toggle" type="button" data-sidebar-toggle aria-label="Menu">☰</button>
+        <div>
+          <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+          <p>{% block page_subtitle %}{% endblock %}</p>
+        </div>
+      </div>
+      <div class="actions">
+        {% block top_actions %}{% endblock %}
+      </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-wrap">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% else %}
+  {% block public %}{% endblock %}
+{% endif %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
